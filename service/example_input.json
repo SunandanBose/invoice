@@ -1,0 +1,76 @@
+{
+  "invoice_no": "134",
+  "invoice_date": "05-Dec-2025",
+  "to": "The Director, CSIR - National Metallurgical Laboratory",
+  "job_description": "Platinum Jubilee",
+  "items": [
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    },
+    {
+      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "hsn": "997329",
+      "qty": 1,
+      "rate": "25400",
+      "amount": "25400"
+    }
+  ],
+  "taxable_amount": "25400",
+  "cgst": "2286",
+  "sgst": "2286",
+  "total": "29972"
+}
+
