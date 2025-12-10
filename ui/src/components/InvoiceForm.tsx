@@ -148,22 +148,28 @@ export const InvoiceForm = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
 
-      // Parse response
-      const result = await response.json();
+      // Check if response is PDF or JSON
+      const contentType = response.headers.get("content-type");
+      let blob: Blob;
 
-      // Decode base64 PDF
-      const base64Data = result.body;
-      const binaryString = atob(base64Data);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+      if (contentType && contentType.includes("application/pdf")) {
+        // Direct PDF response
+        blob = await response.blob();
+      } else {
+        // JSON response with base64 encoded PDF
+        const result = await response.json();
+        const base64Data = result.body;
+        const binaryString = atob(base64Data);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        blob = new Blob([bytes], { type: "application/pdf" });
       }
-
-      // Create blob and download
-      const blob = new Blob([bytes], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
