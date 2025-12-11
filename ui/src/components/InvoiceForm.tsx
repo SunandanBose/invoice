@@ -18,7 +18,9 @@ const API_KEY = ""; // Add your API key here if using API key authentication
 
 export const InvoiceForm = () => {
   const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [recipient, setRecipient] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [recipientGst, setRecipientGst] = useState("");
   const [invoiceDate, setInvoiceDate] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [items, setItems] = useState<LineItem[]>([
@@ -90,10 +92,10 @@ export const InvoiceForm = () => {
       return;
     }
 
-    if (!recipient) {
+    if (!recipientName) {
       toast({
         title: "Missing Information",
-        description: "Please enter recipient details",
+        description: "Please enter recipient name",
         variant: "destructive"
       });
       return;
@@ -111,6 +113,13 @@ export const InvoiceForm = () => {
     setIsGenerating(true);
 
     try {
+      // Combine recipient fields into the format expected by backend
+      const recipientParts = [];
+      if (recipientName) recipientParts.push(recipientName);
+      if (recipientAddress) recipientParts.push(recipientAddress);
+      if (recipientGst) recipientParts.push(`GST NO: ${recipientGst}`);
+      const recipient = recipientParts.join('\n');
+
       // Prepare invoice data
       const invoiceData = {
         invoice_no: invoiceNumber,
@@ -239,13 +248,25 @@ export const InvoiceForm = () => {
             <h2 className="font-semibold">Bill To</h2>
           </div>
           
-          <div className="bg-card rounded-2xl p-4 shadow-soft">
+          <div className="bg-card rounded-2xl p-4 shadow-soft space-y-4">
+            <Input 
+              label="Recipient Name"
+              placeholder="Enter recipient name..."
+              value={recipientName}
+              onChange={(e) => setRecipientName(e.target.value)}
+            />
             <Textarea 
-              label="Recipient Details"
-              placeholder="Name and address of the recipient..."
-              value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              className="min-h-[80px]"
+              label="Recipient Address"
+              placeholder="Enter recipient address..."
+              value={recipientAddress}
+              onChange={(e) => setRecipientAddress(e.target.value)}
+              className="min-h-[60px]"
+            />
+            <Input 
+              label="Recipient GST No"
+              placeholder="Enter GST number (e.g., 20RCHS01462GIDA)"
+              value={recipientGst}
+              onChange={(e) => setRecipientGst(e.target.value)}
             />
           </div>
         </section>
