@@ -5,10 +5,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+type UnitType = "" | "sqft" | "feet" | "meter";
+
 interface LineItem {
   id: string;
   name: string;
   quantity: string;
+  unit: UnitType;
   rate: string;
 }
 
@@ -24,7 +27,7 @@ export const InvoiceForm = () => {
   const [invoiceDate, setInvoiceDate] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [items, setItems] = useState<LineItem[]>([
-    { id: "1", name: "", quantity: "", rate: "" }
+    { id: "1", name: "", quantity: "", unit: "", rate: "" }
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -32,7 +35,7 @@ export const InvoiceForm = () => {
   const addItem = () => {
     setItems([
       ...items,
-      { id: Date.now().toString(), name: "", quantity: "", rate: "" }
+      { id: Date.now().toString(), name: "", quantity: "", unit: "", rate: "" }
     ]);
   };
 
@@ -130,6 +133,7 @@ export const InvoiceForm = () => {
           name: item.name,
           hsn: "997329", // Default HSN code
           qty: parseInt(item.quantity) || 0,
+          unit: item.unit || "", // Include unit field
           rate: item.rate,
           amount: calculateItemTotal(item).toString()
         })),
@@ -327,15 +331,38 @@ export const InvoiceForm = () => {
                 />
 
                 <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Input 
+                      type="number"
+                      placeholder="Quantity"
+                      value={item.quantity}
+                      onChange={(e) => updateItem(item.id, "quantity", e.target.value)}
+                    />
+                    <div className="flex gap-1">
+                      {[
+                        { value: "", label: "—" },
+                        { value: "sqft", label: "sqft" },
+                        { value: "feet", label: "ft" },
+                        { value: "meter", label: "m" },
+                      ].map((unit) => (
+                        <button
+                          key={unit.value}
+                          type="button"
+                          onClick={() => updateItem(item.id, "unit", unit.value)}
+                          className={`text-xs px-2 py-0.5 rounded-full transition-all ${
+                            item.unit === unit.value 
+                              ? "bg-primary text-primary-foreground" 
+                              : "text-muted-foreground hover:bg-secondary"
+                          }`}
+                        >
+                          {unit.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <Input 
                     type="number"
-                    placeholder="Qty"
-                    value={item.quantity}
-                    onChange={(e) => updateItem(item.id, "quantity", e.target.value)}
-                  />
-                  <Input 
-                    type="number"
-                    placeholder="Rate (₹)"
+                    placeholder={item.unit ? `₹ / ${item.unit}` : "Rate (₹)"}
                     value={item.rate}
                     onChange={(e) => updateItem(item.id, "rate", e.target.value)}
                   />

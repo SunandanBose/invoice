@@ -381,8 +381,8 @@ class InvoiceGenerator:
         Returns:
             Internal format dictionary with all required fields
         """
-        # Parse customer details from 'to' field
-        customer_name, customer_address = self._parse_customer_info(
+        # Parse customer details from 'to' field (including GST if present)
+        customer_name, customer_address, customer_gstin = self._parse_customer_info(
             invoice_data.get('to', '')
         )
         
@@ -414,7 +414,7 @@ class InvoiceGenerator:
             'customer': {
                 'name': customer_name,
                 'address': customer_address,
-                'gstin': invoice_data.get('customer_gstin', DEFAULT_CUSTOMER_GSTIN)
+                'gstin': customer_gstin
             },
             'job_description': invoice_data.get('job_description', ''),
             'event_name': invoice_data.get('event_name', ''),
@@ -433,18 +433,44 @@ class InvoiceGenerator:
     
     def _parse_customer_info(self, to_field: str) -> tuple:
         """
-        Parse customer name and address from 'to' field.
+        Parse customer name, address, and GST number from 'to' field.
+        
+        The 'to' field can contain GST information in formats like:
+        - "GST NO: 20RCHS01462GIDA"
+        - "GST No: 20RCHS01462GIDA"
+        - "GSTIN: 20RCHS01462GIDA"
         
         Args:
             to_field: Combined customer info string
             
         Returns:
-            Tuple of (customer_name, customer_address)
+            Tuple of (customer_name, customer_address, customer_gstin)
         """
-        to_parts = to_field.split(',', 1)
-        customer_name = to_parts[0].strip() if to_parts else ''
-        customer_address = to_parts[1].strip() if len(to_parts) > 1 else to_field
-        return customer_name, customer_address
+        import re
+        
+        # Extract GST number if present
+        gst_pattern = r'GST\s*(?:NO|No|NUMBER|Number|IN|in)?[\s:]+([A-Z0-9]{15})'
+        gst_match = re.search(gst_pattern, to_field, re.IGNORECASE)
+        
+        customer_gstin = DEFAULT_CUSTOMER_GSTIN
+        cleaned_to_field = to_field
+        
+        if gst_match:
+            customer_gstin = gst_match.group(1)
+            # Remove the GST line from the to_field
+            cleaned_to_field = re.sub(r'GST\s*(?:NO|No|NUMBER|Number|IN|in)?[\s:]+[A-Z0-9]{15}', '', to_field, flags=re.IGNORECASE)
+        
+        # Clean up the field - remove extra whitespace and newlines
+        cleaned_to_field = re.sub(r'\s+', ' ', cleaned_to_field).strip()
+        
+        # Split into name and address
+        # First line is name, rest is address
+        lines = [line.strip() for line in to_field.split('\n') if line.strip() and not re.search(r'GST\s*(?:NO|No|NUMBER|Number|IN|in)?[\s:]+[A-Z0-9]{15}', line, re.IGNORECASE)]
+        
+        customer_name = lines[0] if lines else ''
+        customer_address = '\n'.join(lines[1:]) if len(lines) > 1 else ''
+        
+        return customer_name, customer_address, customer_gstin
     
     def _transform_items(self, items: List[Dict]) -> List[Dict]:
         """
@@ -462,6 +488,7 @@ class InvoiceGenerator:
                 'description': item.get('name', ''),
                 'hsn_code': item.get('hsn', ''),
                 'quantity': str(item.get('qty', '')),
+                'unit': item.get('unit', ''),  # Add unit field
                 'rate': str(item.get('rate', '')),
                 'amount': safe_float(item.get('amount', 0))
             })
@@ -625,12 +652,25 @@ class InvoiceGenerator:
             description = item.get('description', '')
             desc_para = Paragraph(description, self.styles['TableCellSmall'])
             
+            # Get unit
+            unit = item.get('unit', '')
+            
+            # Format quantity with unit (if unit is not empty or default '-')
+            quantity_str = str(item.get('quantity', ''))
+            if unit and unit != '':
+                quantity_str = f"{quantity_str} {unit}"
+            
+            # Format rate with unit (if unit is not empty or default '-')
+            rate_str = str(item.get('rate', ''))
+            if unit and unit != '':
+                rate_str = f"{rate_str} / {unit}"
+            
             table_data.append([
                 Paragraph(str(idx), self.styles['TableCellSmall']),
                 desc_para,
                 Paragraph(item.get('hsn_code', ''), self.styles['TableCellSmall']),
-                Paragraph(str(item.get('quantity', '')), self.styles['TableCellSmall']),
-                Paragraph(str(item.get('rate', '')), self.styles['TableCellSmall']),
+                Paragraph(quantity_str, self.styles['TableCellSmall']),
+                Paragraph(rate_str, self.styles['TableCellSmall']),
                 Paragraph(str(item.get('amount', '')), self.styles['TableCellSmall'])
             ])
         

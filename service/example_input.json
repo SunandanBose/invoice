@@ -1,76 +1,38 @@
 {
   "invoice_no": "134",
   "invoice_date": "05-Dec-2025",
-  "to": "The Director, CSIR - National Metallurgical Laboratory",
+  "to": "The Director\nCSIR - National Metallurgical Laboratory\nGST NO: 20AAATC2716R2ZS",
   "job_description": "Platinum Jubilee",
   "items": [
     {
       "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
       "hsn": "997329",
       "qty": 1,
+      "unit": "",
       "rate": "25400",
       "amount": "25400"
     },
     {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "name": "Tent setup with flooring (200 sqft)",
       "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
+      "qty": 200,
+      "unit": "sqft",
+      "rate": "50",
+      "amount": "10000"
     },
     {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
+      "name": "Decorative lighting (50 meter)",
       "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
-    },
-    {
-      "name": "Stage Programme PA System with Stage light & codeless microphone (3nos)",
-      "hsn": "997329",
-      "qty": 1,
-      "rate": "25400",
-      "amount": "25400"
+      "qty": 50,
+      "unit": "meter",
+      "rate": "100",
+      "amount": "5000"
     }
   ],
-  "taxable_amount": "25400",
-  "cgst": "2286",
-  "sgst": "2286",
-  "total": "29972"
+  "taxable_amount": "40400",
+  "cgst": "3636",
+  "sgst": "3636",
+  "total": "47672"
 }
+
 

@@ -35,3 +35,4 @@ INVOICE_SETTINGS = {
     "round_off_enabled": True
 }
 
+

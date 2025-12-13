@@ -53,6 +53,21 @@ def lambda_handler(event, context):
     Example: invoice_134.pdf
     """
     
+    # CORS headers for all responses
+    cors_headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key',
+        'Access-Control-Allow-Methods': 'POST,OPTIONS'
+    }
+    
+    # Handle OPTIONS request (preflight)
+    if event.get('httpMethod') == 'OPTIONS':
+        return {
+            'statusCode': 200,
+            'headers': cors_headers,
+            'body': json.dumps({'message': 'CORS preflight successful'})
+        }
+    
     try:
         # Debug: Log the incoming event
         print(f"DEBUG - Event type: {type(event)}")
@@ -90,6 +105,10 @@ def lambda_handler(event, context):
         if missing_fields:
             return {
                 'statusCode': 400,
+                'headers': {
+                    **cors_headers,
+                    'Content-Type': 'application/json'
+                },
                 'body': json.dumps({
                     'error': f'Missing required fields: {", ".join(missing_fields)}'
                 })
@@ -106,10 +125,11 @@ def lambda_handler(event, context):
         invoice_number = invoice_data.get('invoice_no', 'unknown')
         filename = f'invoice_{invoice_number}.pdf'
         
-        # Return response with proper filename
+        # Return response with proper filename and CORS headers
         return {
             'statusCode': 200,
             'headers': {
+                **cors_headers,
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': f'attachment; filename={filename}'
             },
@@ -120,6 +140,10 @@ def lambda_handler(event, context):
     except json.JSONDecodeError as e:
         return {
             'statusCode': 400,
+            'headers': {
+                **cors_headers,
+                'Content-Type': 'application/json'
+            },
             'body': json.dumps({
                 'error': 'Invalid JSON format',
                 'details': str(e)
@@ -129,6 +153,10 @@ def lambda_handler(event, context):
     except Exception as e:
         return {
             'statusCode': 500,
+            'headers': {
+                **cors_headers,
+                'Content-Type': 'application/json'
+            },
             'body': json.dumps({
                 'error': 'Internal server error',
                 'details': str(e)
