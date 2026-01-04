@@ -13,6 +13,7 @@ interface LineItem {
   quantity: string;
   unit: UnitType;
   rate: string;
+  days: string;
 }
 
 // API Configuration
@@ -27,7 +28,7 @@ export const InvoiceForm = () => {
   const [invoiceDate, setInvoiceDate] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [items, setItems] = useState<LineItem[]>([
-    { id: "1", name: "", quantity: "", unit: "", rate: "" }
+    { id: "1", name: "", quantity: "", unit: "", rate: "", days: "1" }
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -35,7 +36,7 @@ export const InvoiceForm = () => {
   const addItem = () => {
     setItems([
       ...items,
-      { id: Date.now().toString(), name: "", quantity: "", unit: "", rate: "" }
+      { id: Date.now().toString(), name: "", quantity: "", unit: "", rate: "", days: "1" }
     ]);
   };
 
@@ -54,7 +55,8 @@ export const InvoiceForm = () => {
   const calculateItemTotal = (item: LineItem) => {
     const qty = parseFloat(item.quantity) || 0;
     const rate = parseFloat(item.rate) || 0;
-    return qty * rate;
+    const days = parseFloat(item.days) || 1;
+    return qty * rate * days;
   };
 
   const calculateSubtotal = () => {
@@ -135,6 +137,7 @@ export const InvoiceForm = () => {
           qty: parseInt(item.quantity) || 0,
           unit: item.unit || "", // Include unit field
           rate: item.rate,
+          days: parseInt(item.days) || 1, // Include days field
           amount: calculateItemTotal(item).toString()
         })),
         taxable_amount: subtotal.toString(),
@@ -330,7 +333,7 @@ export const InvoiceForm = () => {
                   onChange={(e) => updateItem(item.id, "name", e.target.value)}
                 />
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
                     <Input 
                       type="number"
@@ -366,6 +369,17 @@ export const InvoiceForm = () => {
                     value={item.rate}
                     onChange={(e) => updateItem(item.id, "rate", e.target.value)}
                   />
+                  <div className="space-y-1.5">
+                    <Input 
+                      type="number"
+                      placeholder="Days"
+                      value={item.days}
+                      onChange={(e) => updateItem(item.id, "days", e.target.value)}
+                    />
+                    <span className="text-xs text-muted-foreground block text-center">
+                      {item.days === "1" ? "1 Day" : `${item.days || 1} Days`}
+                    </span>
+                  </div>
                 </div>
 
                 {(item.quantity && item.rate) && (

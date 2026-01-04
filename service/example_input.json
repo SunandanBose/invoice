@@ -10,6 +10,7 @@
       "qty": 1,
       "unit": "",
       "rate": "25400",
+      "days": 1,
       "amount": "25400"
     },
     {
@@ -18,7 +19,8 @@
       "qty": 200,
       "unit": "sqft",
       "rate": "50",
-      "amount": "10000"
+      "days": 2,
+      "amount": "20000"
     },
     {
       "name": "Decorative lighting (50 meter)",
@@ -26,13 +28,14 @@
       "qty": 50,
       "unit": "meter",
       "rate": "100",
-      "amount": "5000"
+      "days": 3,
+      "amount": "15000"
     }
   ],
-  "taxable_amount": "40400",
-  "cgst": "3636",
-  "sgst": "3636",
-  "total": "47672"
+  "taxable_amount": "60400",
+  "cgst": "5436",
+  "sgst": "5436",
+  "total": "71272"
 }
 
 

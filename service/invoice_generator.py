@@ -25,7 +25,7 @@ SECTION_SPACING = 8  # Spacing between sections in points
 MAX_ITEMS_ROWS = 12  # Maximum item rows to fit on one page (plus 1 header)
 
 # Column widths for items table (total should equal page width minus margins)
-ITEMS_TABLE_WIDTHS = [0.45, 2.85, 0.75, 0.45, 0.65, 1.15]  # in inches
+ITEMS_TABLE_WIDTHS = [0.40, 2.50, 0.70, 0.45, 0.60, 0.45, 1.10]  # in inches
 
 # Column widths for other tables
 INVOICE_INFO_WIDTHS = [3.15, 3.15]  # in inches
@@ -490,6 +490,7 @@ class InvoiceGenerator:
                 'quantity': str(item.get('qty', '')),
                 'unit': item.get('unit', ''),  # Add unit field
                 'rate': str(item.get('rate', '')),
+                'days': int(item.get('days', 1)),  # Add days field with default 1
                 'amount': safe_float(item.get('amount', 0))
             })
         return transformed
@@ -641,6 +642,7 @@ class InvoiceGenerator:
                 Paragraph('<b>HSN Code</b>', self.styles['TableCellSmall']),
                 Paragraph('<b>Qty</b>', self.styles['TableCellSmall']),
                 Paragraph('<b>Rate</b>', self.styles['TableCellSmall']),
+                Paragraph('<b>Days</b>', self.styles['TableCellSmall']),
                 Paragraph('<b>Amount (Rs.)</b>', self.styles['TableCellSmall'])
             ]
         ]
@@ -665,12 +667,16 @@ class InvoiceGenerator:
             if unit and unit != '':
                 rate_str = f"{rate_str} / {unit}"
             
+            # Get days
+            days = item.get('days', 1)
+            
             table_data.append([
                 Paragraph(str(idx), self.styles['TableCellSmall']),
                 desc_para,
                 Paragraph(item.get('hsn_code', ''), self.styles['TableCellSmall']),
                 Paragraph(quantity_str, self.styles['TableCellSmall']),
                 Paragraph(rate_str, self.styles['TableCellSmall']),
+                Paragraph(str(days), self.styles['TableCellSmall']),
                 Paragraph(str(item.get('amount', '')), self.styles['TableCellSmall'])
             ])
         
@@ -686,11 +692,13 @@ class InvoiceGenerator:
                     Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall']),
+                    Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall'])
                 ])
             else:
                 table_data.append([
                     Paragraph(str(i), self.styles['TableCellSmall']),
+                    Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall']),
                     Paragraph('', self.styles['TableCellSmall']),
